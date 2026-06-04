@@ -1,5 +1,20 @@
-# embo-pangenomics-2026
-EMBO Practical Pangenomics Course 2026
+# EMBO Practical Pangenomics Course 2026
+## *Torre del Greco, Naples, Italy, 7-13 June 2026*
+* [EMBO Practical Pangenomics 2026 website](https://meetings.embo.org/event/26-pangenomics)
+
+## Prerequisites & Tutorials
+
+Basic knowledge of **Unix** is required. We recommend reviewing the following tutorials before the course starts.
+
+* 🖥️ **UNIX:** [Shell Novice Tutorial](http://swcarpentry.github.io/shell-novice/)
+
+## Server Access & Connections
+
+TODO
+
+## Repos with teaching materials
+
+TODO
 
 ## Poster Sessions
 
