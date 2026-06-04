@@ -18,7 +18,7 @@ TODO
 
 ## Poster Sessions
 
-You can find the complete list of files in the dedicated folder: [Browse Posters Folder](Posters)
+You can find the complete list of files in the dedicated folder: [Browse Posters Folder](posters)
 
 Click on any poster preview to open the full PDF version.
 
