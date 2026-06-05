@@ -14,9 +14,9 @@ Each student can access their assigned VM using their own username and the speci
 ```
 ssh <username>@<IP>
 ```
-For example, in the case of organizingsecretariat and the assigned IP address being 100.000.000.111, the command will be:
+For example, in the case of organizingsecretariat and the assigned IP address being 100.0.0.111, the command will be:
 ```
-ssh organizingsecretariat@100.000.000.111
+ssh organizingsecretariat@100.0.0.111
 ```
 Please make sure that you use the private key corresponding to the public key previously shared for the setup of the VM access. If the correct key is not used by default, you can specify it explicitly using:
 ```
