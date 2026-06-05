@@ -50,6 +50,7 @@ Click on any poster preview to open the full PDF version.
 | **Pochon Zoé** | [![](posters/Pochon_Zoé.jpg)](posters/Pochon_Zoé.pdf) |
 | **Rai Niraj** | [![](posters/Rai_Niraj.jpg)](posters/Rai_Niraj.pdf) |
 | **Reddavide Alberto** | [![](posters/Reddavide_Alberto.jpg)](posters/Reddavide_Alberto.pdf) |
+| **Sahakyan Hovhannes** | [![](posters/Sahakyan_Hovhannes.jpg)](posters/Sahakyan_Hovhannes.pdf) |
 | **Santos de Freitas Anderson** | [![](posters/Santos_de_Freitas_Anderson.jpg)](posters/Santos_de_Freitas_Anderson.pdf) |
 | **Tarabini Andrea** | [![](posters/Tarabini_Andrea.jpg)](posters/Tarabini_Andrea.pdf) |
 | **Upadhyay Maulik** | [![](posters/Upadhyay_Maulik.jpg)](posters/Upadhyay_Maulik.pdf) |
