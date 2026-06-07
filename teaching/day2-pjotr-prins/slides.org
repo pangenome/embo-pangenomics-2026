@@ -1,0 +1,122 @@
+#+TITLE: What is FAIR in the age of AI
+#+AUTHOR: Pjotr Prins
+
+# 15-20 min
+# Images: C-c C-x C-v
+# org-tree-slide-mode  C-< and C->
+
+* Take home messages
+
+- Is FAIR OPEN?
+- Is AI FAIR?
+- Who here is NOT using AI?
+
+* FAIR Data?
+
+- Biohackathon Japan
+- The FAIR Guiding Principles for scientific data management and stewardship
+  Mark Wilkinson a.o., Nature Scientific Data (2016)
+  20K citations
+- Findable, Accessible, Interoperable and Reusable (FAIR)
+- Is data on a USB drive in my pocket FAIR?
+  + https://thebird.nl/data/Sample01/is-in-my-pocket
+
+* Reproducible?
+
+- Is FAIR data reproducible?
+- NO - reusable is not reproducible
+
+* Open data
+
+- Not sharing is easier than sharing
+- We still have silos and silos of unshared data
+- Even UKBiobank hits the news - for unlicensed shared data
+- If data is already in the open, why be fussy??
+
+* Free and open source software (FOSS)
+
+- Is FOSS software free software?
+- NO - open does not mean free - it depends on the licenses and copyright
+- Lots of open source software on the internet
+
+* AI breaks the rules
+
+- AI companies ignore copyright and licenses and slurp up every word on the internet
+- This is harmful behaviour
+- It is becoming a precedent
+
+* Fait accompli
+
+- Do away with copyright and licenses?
+- Since we put our data, text and code on the internet anyway
+- Where did copyright come from?
+  - Copyright protects business interests
+  - We adopted it to protect our code
+  - Uniprot and wikipedia are getting ripped...
+
+* AI is not FAIR
+
+- Once the data is in a model it is not findable, accessible, interoperable, reusable
+- Or is it?
+- Some people think AI regurgitates
+- There is randomness built in
+- AI can make scary mistakes
+
+* There are more concerns
+
+The GNU Guix project decided to make a stand:
+
+- title: Standing up for human crafting
+=> https://codeberg.org/guix/guix-consensus-documents/pulls/13
+
+Before we go over these, realise that I am a fan of AI power in both software development and the scientific effort!
+The points here are by the Guix project and the value is that we need to address them.
+
+* 1) The main AI companies are centralising power?
+
+- Force you to run non-free software
+- Data collection - using your phone, TV...
+- Monitoring and sharing/selling
+- Threat to privacy
+- Potentially worse scenarios - what if?
+- How can we change that?
+
+* 2) AI ignores the law?
+
+- Particularly copyright and copyleft
+- Stealing all material
+- With human help rewriting software so the license can be changed
+- How can we change that?
+
+* 3) AI demeans humanity
+
+- The argument is that people become more lazy and stupid
+- How can we change that?
+
+* 4) AI is an ecological nightmare
+
+- The current companies and investments generate huge emissions and material shortages
+- How can we change that?
+
+* Addressing these issues
+
+- That is not going to be easy!
+- We need local models that get produced by free software
+- Improve models to be more efficient
+- Improve models to be more reproducible
+- I am convinced we can do it - though we may be looking into the abyss
+
+* The abyss
+
+- An immeasurably deep chasm, depth, or void.
+- In the book of Genesis, the primeval Chaos out of which earth and sky were formed.
+- The abode of evil spirits; hell.
+
+So apt being next to Vesuvio
+
+* Conclusion
+
+- FAIR is not necessarily open data (but findable and accessible)
+- FAIR data is not necessarily reproducible (but reusable)
+- AI is not FAIR even though it is extremely useful - e.g. for creating ontologies and fine mapping QTL
+- AI has its problems and we need to address them
