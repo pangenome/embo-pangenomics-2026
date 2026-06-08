@@ -1,2 +1,2 @@
 (specifications->manifest
- '("grep" "gzip"))
+ '("coreutils" "grep" "gzip"))
