@@ -1,0 +1,22 @@
+## Slides: One question before choosing a tool
+
+> What kind of molecular evidence do we have?
+
+- Technologies observe different properties of molecules
+- Each workflow preserves some information and loses some
+- A pangenome can only represent diversity supported by evidence
+
+::: {.notes}
+Open with the distinction between a biological genome and a sequencing dataset. A read is an observation, not a chromosome.
+:::
+
+## Slides: Learning goals
+
+By the end, you should be able to:
+
+- Distinguish molecules, libraries, reads, and processed evidence
+- Interpret what different coverage measurements count
+- Compare short reads, HiFi, and nanopore by the evidence they preserve
+- Separate continuous sequence from structural and contact evidence
+- Recognize the sequence, graph, alignment, and index formats used in the course
+- Choose data that fit the biological question and project constraints

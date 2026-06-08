@@ -1,0 +1,65 @@
+## Slides: Why sequencing technology matters for pangenomics
+
+#### The graph is only as good as the molecules and evidence used to build it
+
+Most genomics workflows were historically built around a single reference genome. Pangenomics changes the reference model: instead of one coordinate line, we often represent a population, species, or clade as a collection of haplotypes, assemblies, and paths through a graph.
+
+Before we ask which pangenome tool to run, we should ask what kind of molecular evidence we have. A short-read dataset, a HiFi assembly, an ultra-long nanopore dataset, and a Hi-C contact map can all describe the same biological sample, but they answer different questions.
+
+## Slides: SNPs and small indels can be detected well by short reads
+
+```text
+Reference genome:  A C T G A C T G A C T               A C T G A C T G A C T G
+                           |                                   | |
+Sample read:       A C T G T C T G A C T               A C T G - - T G A C T G
+                           ^                                   ^ ^
+                    SNP: A → T                              small indel
+```
+
+## Slides: A 15 kb insertion absent from the reference is difficult to detect with short reads but visible in long reads
+
+```text
+Reference genome:  A -------- B
+
+Sample genome:     A -------- [ 15 kb insertion ] -------- B
+
+Short reads:       A ---->
+                         ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
+                                                     <---- B
+
+Long read:         A -------- [ 15 kb insertion ] -------- B
+```
+
+## Slides: Resolving the exact length of a repeat expansion requires long reads
+
+```text
+Reference: A -- CAG CAG CAG CAG -- B
+                   4 repeats
+
+Sample:    A -- CAG CAG CAG CAG CAG CAG CAG CAG CAG CAG CAG CAG -- B
+                              12 repeats
+
+Short reads:        CAG CAG CAG
+                CAG CAG CAG      (All reads look similar inside the repeat)
+                    CAG CAG CAG    (Exact repeat number is unclear)
+
+Long read: A -- CAG CAG CAG CAG CAG CAG CAG CAG CAG CAG CAG CAG -- B
+```
+
+## Slides: A heterozygous structural variant becomes interpretable only when reads are phased
+
+```text
+Maternal chromosome:  A -------- B -------- C -------- D
+
+Paternal chromosome:  A -------- C -------- B -------- D
+
+Unphased reads:       A -- B
+                      B -- C
+                      A -- C
+                      C -- B
+                      B -- D
+
+Haplotype 1:          A -------- B -------- C -------- D
+
+Haplotype 2:          A -------- C -------- B -------- D
+```

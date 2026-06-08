@@ -1,0 +1,17 @@
+## Slides: How this material is produced
+
+The editable sources are deliberately kept in Markdown-compatible Quarto files:
+
+- `slides.qmd` contains document metadata and the ordered section includes.
+- `slides/` contains the projected sections as separate `.qmd` files.
+- `handout.qmd` contains the long-form companion document.
+- `handout/` contains the participant-facing handout sections as separate `.qmd` files.
+- `_quarto.yml` defines the project and output directory.
+
+Render the complete project with:
+
+```bash
+quarto render
+```
+
+This creates an HTML handout and Reveal.js slides. Quarto expands the includes in `slides.qmd` into one projected document. Keeping the sources in Git makes changes reviewable and preserves the history of both scientific content and teaching design.

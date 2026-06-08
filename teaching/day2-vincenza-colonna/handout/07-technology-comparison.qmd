@@ -1,0 +1,16 @@
+## 7. Technology comparison for pangenomics
+
+No sequencing technology is best for every pangenomics project. Start with the biological question, then choose the data type that provides the required accuracy, molecule span, throughput, and long-range context.
+
+| Question | Strong data type | Why |
+|---|---|---|
+| Many samples, common SNPs | Short reads | Scalable, accurate, cost-effective. |
+| De novo assembly | PacBio HiFi, often plus Hi-C | Accurate long reads produce contiguous assemblies; Hi-C helps chromosome scaffolding. |
+| Very large repeats or telomere-to-telomere goals | Ultra-long nanopore plus complementary data | Long molecules can span repeats that other reads cannot. |
+| Structural variant discovery | Long reads | Reads can span breakpoints and inserted sequence. |
+| Phasing | Long reads, linked reads, trio data, Hi-C | Phase requires information connecting variants across distance. |
+| Methylation linked to haplotype | Native long-read sequencing | Genetic and epigenetic information can be observed on the same molecule. |
+| Isoform discovery | Long-read RNA/cDNA sequencing | Full-length transcript evidence reduces ambiguity. |
+| Graph genotyping at scale | Short reads against a graph, or long reads for complex loci | Graphs reduce linear-reference bias; long reads help complex regions. |
+
+---

@@ -1,0 +1,32 @@
+.reveal section#title-slide {
+  display: none !important;
+}
+
+.reveal .custom-title-slide h2 {
+  font-size: 1.55em;
+  line-height: 1.1;
+  margin-bottom: 0.25em;
+}
+
+.reveal .custom-title-slide .title-subtitle {
+  font-size: 0.8em;
+  margin-bottom: 0.35em;
+}
+
+.reveal .custom-title-slide .title-author {
+  font-size: 0.62em;
+  margin-bottom: 0.55em;
+}
+
+.reveal .custom-title-slide .title-images {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.reveal .custom-title-slide .title-images img {
+  width: 22%;
+  height: auto;
+  margin: 0;
+}

@@ -1,0 +1,26 @@
+## 3. Short-read sequencing: high-throughput, accurate, scalable
+
+Short-read sequencing produces very large numbers of accurate reads, usually tens to hundreds of bases long. [Illumina](https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology.html) and [Ultima Genomics](https://www.ultimagenomics.com/technology/) are both short-read, sequencing-by-synthesis approaches, but they differ in how they generate dense clonal sequencing features and how they are optimized for scale, cost, throughput, and analysis.
+
+**Shared sequencing-by-synthesis logic**
+1. DNA fragments are converted into a library with platform-specific adapters.
+2. Molecules are amplified or otherwise converted into many detectable copies.
+3. Nucleotide incorporation is measured cycle by cycle.
+4. The instrument or processing pipeline converts images/intensities into base calls.
+5. Reads are demultiplexed, quality-scored, and exported as FASTQ or aligned data.
+
+**Illumina: the default reference point for short-read data compatibility, benchmarking, and mature clinical or research pipelines**
+Illumina is the established short-read workhorse. Fragments bind to a flow cell, form clonal clusters, and are read by reversible-terminator sequencing-by-synthesis. Its main value is not only chemistry; it is the surrounding ecosystem: many instruments, standardized library types, familiar error profiles, mature QC, and deeply tested alignment and variant-calling pipelines.
+
+**Ultima: especially relevant when the bottleneck is population-scale or deep sequencing cost, large sample numbers, or very high-depth SNV detection.**
+Ultima is a newer high-throughput short-read architecture designed around sequencing at very large scale. In simplified terms, library molecules are clonally amplified into beads, loaded onto a high-density open fluidics surface, and sequenced with flow-based sequencing-by-synthesis chemistry. Ultima workflows also include ppmSeq, which compares complementary strand information to support very accurate single-nucleotide variant detection in applications such as rare variant and cell-free DNA analysis.
+
+| | |
+|---|---|
+| **Strengths** | &bull; High throughput and high per-base accuracy<br>&bull; Cost-effective for many samples<br>&bull; Excellent for SNPs, small indels, expression assays, and metagenomics<br>&bull; Mature QC and variant-calling pipelines |
+| **Limitations for pangenomics** | &bull; Reads are shorter than many repeats and structural variants<br>&bull; Mapping to one reference can introduce reference bias<br>&bull; Novel insertions and long-range haplotypes are difficult to reconstruct<br>&bull; Complex genomes are difficult to assemble from short reads alone |
+| **Pangenomics role** | &bull; Map many samples to a pangenome graph<br>&bull; Genotype SNPs and small indels<br>&bull; Estimate cohort allele frequencies<br>&bull; Validate graph paths and variant calls<br>&bull; Provide deep coverage for represented regions<br><br>Short reads are less suitable as the only evidence for structurally complex regions. |
+
+: {.platform-summary tbl-colwidths="[24,76]"}
+
+---

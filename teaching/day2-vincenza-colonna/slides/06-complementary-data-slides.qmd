@@ -1,0 +1,41 @@
+## Slides: Complementary evidence
+
+## Slides: Beyond sequence reads
+
+**Important complementary evidence**
+
+- **Hi-C:** chromosome-scale contacts, scaffolding, phasing
+- **Optical maps:** long-molecule label patterns and structural validation
+
+**Functional or specialized extensions**
+
+- **Linked reads:** barcoded molecule associations
+- **RNA sequencing:** annotation, expression, and transcript structure
+- **Single-cell data:** cell-specific interpretation
+
+```text
+Hi-C:          position A <------------> position B
+Optical map:   |---*------*---*------------*---|
+Linked reads:  |--|   |--|       |--|   same barcode
+```
+
+## Slides: Long-range does not always mean long sequence
+
+```text
+Sequence read   ACGTTGCA...---------------->  continuous bases
+Optical map     |---*------*---*-------*---|  label pattern
+Hi-C contact    position A <-----> position B  proximity
+```
+
+Read length, molecule span, and contact distance are different measurements.
+
+## Slides: No single assay answers everything
+
+Sequence assemblies describe possible paths.
+
+Complementary evidence helps determine:
+
+- Which paths belong together
+- Which paths are expressed
+- Which paths differ by cell type
+- Which paths carry epigenetic marks

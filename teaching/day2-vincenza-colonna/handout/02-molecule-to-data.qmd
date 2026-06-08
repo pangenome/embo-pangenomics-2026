@@ -1,0 +1,169 @@
+## 2. From biological molecule to sequencing data
+
+::: {.callout-note appearance="simple" }
+
+```text
+Biological sample
+  ↓
+Extracted DNA/RNA molecules
+  ↓
+Library with adapters/barcodes
+  ↓
+Raw instrument measurements
+  ↓
+Basecalled reads
+  ↓
+Read alignments or assemblies
+  ↓
+Variants, annotations, and graphs
+  ↓
+Biological interpretation
+```
+:::
+
+### Key definitions
+
+| Term | Definition |
+|---|---|
+| **Sample** | The biological material: blood, cultured cells, tissue, environmental sample, isolate, ancient DNA, single cells, etc. |
+| **Molecule** | The physical DNA or RNA fragment entering library preparation. Its length and integrity strongly affect what can be learned. |
+| **Library** | The prepared molecule collection loaded onto the instrument. Library preparation can introduce fragmentation, amplification, adapter sequences, barcodes, and bias. |
+| **Read** | The digital observation produced by the sequencing instrument and basecaller. A read is not the original chromosome; it is an inferred sequence from a molecule or molecule cluster. |
+| **Basecalling** | The computational conversion of instrument measurements into A/C/G/T or RNA base calls, usually with quality estimates. |
+| **Metadata** | The information needed to interpret the data: sample identity, extraction method, platform, chemistry, library kit, barcode, run date, reference build, pipeline version, and QC thresholds. |
+
+: {.definitions-table tbl-colwidths="[20,80]"}
+
+### Quality score   
+A Phred-scaled estimate of the probability that a base call is incorrect. Most sequencing workflows use Phred-scaled quality values:
+
+```text
+Q = -10 log10(P_error)
+```
+
+- Q20 ≈ 1 error per 100 bases.
+- Q30 ≈ 1 error per 1,000 bases.
+- Q40 ≈ 1 error per 10,000 bases.
+
+### Coverage
+
+Coverage is a general word for how much sequence evidence supports a base, region, molecule, haplotype, k-mer, or path through a genome graph. The exact meaning depends on what is being counted. A dataset described as "30x" may have 30x average read depth, but this does not mean that every base, haplotype, k-mer, or graph path is observed 30 times.
+
+#### Read depth (sequence coverage)
+
+Read depth is the number of reads that overlap a base or region after the reads have been aligned to a reference sequence or graph.
+
+```text
+Reference:  A C G T A C G T A C G T
+Read 1:     A C G T A C              Central bases are covered by three reads, 
+Read 2:         G T A C G T          while coverage drops at the ends of reads 
+Read 3:             A C G T A C      
+Read dept:  2 2 3 3 4 4 3 3 2 2 1 1
+Average read dept: 2.5 
+```
+
+::: {.callout-warning appearance="simple" }
+### Expected average read depth at sequencing
+For a genome of length `G`, sequenced with `N` reads of average length `L`:
+```text
+expected average read depth = (N x L) / G
+```
+For example, `1,000,000 reads x 150 bp / 5,000,000 bp = 30x` average depth. However, 30x average depth does not guarantee 30 reads at every base. Repeats, GC bias, mapping ambiguity, and random sampling create uneven depth.
+:::
+
+
+
+#### Physical coverage
+
+Physical coverage counts how many original DNA molecules or library fragments span a position or region. It uses the full fragment length, including any unsequenced interval between paired reads.
+
+```text
+[F1 --->]-------------------------[<--- R1]
+[F2 --->]----------------------------[<--- R2]
+   [F3 --->]-------------------------[<--- R3]
+      [F4 --->]----------------------[<--- R4]
+         [F5 --->]---------------------[<--- R5]
+|<-------------- 500 bp region ------------------>|
+|<-------------- 500 bp region ------------------>|
+```
+*Here five overlapping fragments all span the same region, giving a physical coverage of 5×.* 
+
+Only the two ends are directly sequenced, but the inferred 500 bp fragment contributes physical coverage across the interval. Physical coverage can therefore be higher than read depth and can provide linking information across repeats or variants.
+
+#### Haplotype coverage
+
+Haplotype coverage is the amount of evidence assigned to each chromosome copy or haplotype. In a diploid sample, total read depth is divided between the two haplotypes, although the division is rarely perfectly even.
+
+```text
+Reference position:              *              Ten reads overlap this
+                                 |              heterozygous position.
+Haplotype 1 reads:  -----A-------|   6 reads    Six carry A, four carry G,
+                    -----A-------|              total read depth is 10x.
+                    -----A-------|              
+                    -----A-------|              
+                    -----A-------|              
+                    -----A-------|             When alleles are phased,    
+                                               haplotype depths are 6x and 4x.
+Haplotype 2 reads:  -----G-------|   4 reads
+                    -----G-------|
+                    -----G-------|
+                    -----G-------|
+
+Total depth:                       10x
+Haplotype 1 depth:                  6x
+Haplotype 2 depth:                  4x
+```
+
+Haplotype coverage matters for phasing and diploid assembly. Long reads may connect several heterozygous variants and show that they belong to the same chromosome copy:
+
+```text
+Haplotype 1:  A -------- C -------- G
+Haplotype 2:  G -------- T -------- A
+
+Long read:    A -------- C -------- G   -> supports haplotype 1
+```
+
+#### K-mer coverage
+
+K-mer coverage is the number of times a particular sequence of length `k` occurs in the read dataset. It is counted directly from sequence strings and does not require alignment to a reference.
+
+```text
+Read:    A C G T A C G
+3-mers (coverage): ACG (2), CGT (1), GTA (1), TAC (1)
+```
+
+If `ACG` occurs 24 times across all reads, its k-mer coverage is 24. Sequencing errors often create rare k-mers with coverage 1 or 2, while true genomic k-mers usually form higher-coverage groups. Repeats can produce k-mers with coverage above the single-copy expectation. In a diploid genome, homozygous k-mers — present on both haplotypes — tend to have roughly twice the coverage of heterozygous k-mers, which occur on only one haplotype, assuming uniform sampling
+
+#### Graph path coverage
+
+Graph path coverage describes how much read, assembly, or haplotype evidence supports a node, edge, or complete route through a genome graph. A node can have high coverage even when one of the alternative paths through it has weak support.
+
+```text
+                     /-- B --\
+graph path:    A ---<         >--- D
+                     \-- C --/
+
+Reads supporting A-B-D: 18
+Reads supporting A-C-D: 12
+```
+
+Nodes A and D may each have about 30x coverage, while the two alternative paths have approximately 18x and 12x support. Reads that touch only A or D do not reveal which branch they support; reads spanning the branch are needed to distinguish path coverage.
+
+Graph coverage may refer to different units, so the unit should always be stated explicitly:
+
+- **Node coverage:** reads or bases aligned to a node.
+- **Edge coverage:** reads or paths supporting a connection.
+- **Path coverage:** reads, assemblies, or haplotypes supporting a route.
+
+::: {.callout-tip title="Interpreting coverage"}
+
+1. What object is being covered?
+2. What evidence is being counted?
+3. Is the value an average or a local measurement?
+4. Is evidence separated by haplotype or graph path?
+5. Are ambiguous reads included, excluded, or counted more than once?
+
+The same dataset can have 30x average read depth, about 15x per haplotype, higher physical coverage from long fragments, and very different coverage on alternative graph paths.
+:::
+
+---

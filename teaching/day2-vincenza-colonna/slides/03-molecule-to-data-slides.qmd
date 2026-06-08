@@ -1,0 +1,151 @@
+## Slides: From biological molecule to sequencing data
+
+Any step can add bias or discard information.
+
+```text
+Biological sample
+  ↓
+Extracted DNA/RNA molecules
+  ↓
+Library with adapters/barcodes
+  ↓
+Raw instrument measurements
+  ↓
+Basecalled reads
+  ↓
+Read alignments or assemblies
+  ↓
+Variants, annotations, and graphs
+  ↓
+Biological interpretation
+```
+
+::: {.notes}
+Use this chain throughout the lecture. Ask participants where molecule length, PCR bias, basecalling, mapping bias, and graph construction enter.
+:::
+
+## Slides: A sequence read is an inference
+
+- **Molecule:** physical DNA or RNA entering preparation
+- **Library:** prepared, adapted, and possibly amplified molecules
+- **Read:** inferred sequence emitted by an instrument and basecaller
+- **Coverage:** how much evidence supports a base, molecule, haplotype, k-mer, or graph path
+- **Metadata:** context required to interpret the observation
+
+
+## Slides: Quality scores
+
+$$Q = -10\log_{10}(P_{error})$$
+
+| Score | Approximate error probability |
+|---:|---:|
+| Q20 | 1 in 100 |
+| Q30 | 1 in 1,000 |
+| Q40 | 1 in 10,000 |
+
+Accuracy alone does not determine biological usefulness.
+
+
+## Slides: The exact meaning of coverage depends on what is being counted
+
+| Coverage type | What is counted |
+|---|---|
+| Read depth | Reads overlapping a base or region |
+| Physical coverage | Original molecules spanning a region |
+| Haplotype coverage | Evidence assigned to each chromosome copy |
+| K-mer coverage | Occurrences of a sequence word |
+| Graph coverage | Evidence supporting nodes, edges, or paths |
+
+> “30x” average read depth does not mean every object is observed 30 times.
+
+## Slides: Read depth varies along a sequence
+
+```text
+Reference:  A C G T A C G T A C G T
+Read 1:     A C G T A C
+Read 2:         G T A C G T
+Read 3:             A C G T A C
+
+Depth:      1 1 2 2 3 3 2 2 1 1 0 0
+```
+Average depth summarizes the dataset; local depth is what supports a particular base or region.
+
+
+## Slides: Expected average read depth at sequencing
+
+For a genome of length `G`, sequenced with `N` reads of average length `L`
+
+```text
+expected average read depth = (N x L) / G
+```
+Example:  `1,000,000 reads x 150 bp / 5,000,000 bp = 30x` average depth. 
+
+>> 30x average depth does not guarantee 30 reads at every base! 
+*Repeats, GC bias, mapping ambiguity, and random sampling create uneven depth* 
+
+## Slides: Physical coverage
+
+Counts how many original DNA molecules or library fragments span a position or region
+
+```text
+Five overlapping fragments all span the same region, giving a physical coverage of 5×
+
+[F1 --->]-------------------------[<--- R1]
+[F2 --->]----------------------------[<--- R2]
+   [F3 --->]-------------------------[<--- R3]
+      [F4 --->]----------------------[<--- R4]
+         [F5 --->]---------------------[<--- R5]
+|<-------------- 500 bp region ------------------>|
+```
+
+## Slides:  Haplotype coverage (i) 
+
+Evidence assigned to each chromosome copy or haplotype
+
+```text
+Reference position:              *              Ten reads overlap this
+                                 |              heterozygous position.
+Haplotype 1 reads:  -----A-------|   6 reads    Six carry A, four carry G,
+                    -----A-------|              total read depth is 10x.
+                    -----A-------|              
+                    -----A-------|              
+                    -----A-------|              
+                    -----A-------|             When alleles are phased,    
+                                               haplotype depths are 6x and 4x.
+Haplotype 2 reads:  -----G-------|   4 reads
+                    -----G-------|
+                    -----G-------|
+                    -----G-------|
+
+Total depth:                       10x
+Haplotype 1 depth:                  6x
+Haplotype 2 depth:                  4x
+```
+
+## Slides:  Haplotype coverage (ii)
+
+Haplotype coverage matters for phasing and diploid assembly
+
+```text
+Haplotype 1:  A -------- C -------- G
+Haplotype 2:  G -------- T -------- A
+
+Long read:    A -------- C -------- G   -> supports haplotype 1
+```
+
+
+## Slides:  Graph path coverage
+
+How much read, assembly, or haplotype evidence supports a node, edge, or complete route through a genome graph
+
+```text
+                     /-- B --\
+graph path:    A ---<         >--- D
+                     \-- C --/
+
+Reads supporting A-B-D: 18
+Reads supporting A-C-D: 12
+```
+- **Node coverage:** reads or bases aligned to a node.
+- **Edge coverage:** reads or paths supporting a connection.
+- **Path coverage:** reads, assemblies, or haplotypes supporting a route.

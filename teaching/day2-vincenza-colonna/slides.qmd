@@ -1,0 +1,32 @@
+---
+title: "Genome sequencing, sequencing technologies, and data types"
+subtitle: "Levelling lecture for the EMBO practical course Pangenomics"
+author: "Enza Colonna - University of Tennessee, USA"
+format:
+  revealjs:
+    css: slides.css
+    slide-number: true
+    progress: true
+    history: false
+    transition: fade
+    center: false
+    width: 1280
+    height: 720
+    margin: 0.08
+    footer: "EMBO Practical Course - Pangenomics"
+---
+
+{{< include slides/00-title-cover-slides.qmd >}}
+<!--  {{< include slides/01-learning-objectives-slides.qmd >}} --> 
+{{< include slides/02-why-sequencing-matters-slides.qmd >}}
+{{< include slides/03-molecule-to-data-slides.qmd >}}
+{{< include slides/04-short-reads-slides.qmd >}}
+{{< include slides/05-long-reads-slides.qmd >}}
+{{< include slides/06-complementary-data-slides.qmd >}}
+{{< include slides/07-data-formats-slides.qmd >}}
+{{< include slides/08-decision-framework-slides.qmd >}}
+{{< include slides/09-common-pitfalls-slides.qmd >}}
+{{< include slides/10-participant-prompts-slides.qmd >}}
+{{< include slides/11-closing-synthesis-slides.qmd >}}
+{{< include slides/12-sources-slides.qmd >}}
+{{< include slides/13-production-slides.qmd >}}

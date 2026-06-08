@@ -1,0 +1,61 @@
+## Slides: Data formats
+
+## Slides: What each file remembers
+
+| Format | Main evidence |
+|---|---|
+| FASTA / FASTQ | Sequences; FASTQ also stores qualities |
+| PAF | Pairwise sequence mappings, including WFMASH output |
+| BAM / CRAM | Linear or surjected alignments |
+| VCF / gVCF | Variants, genotypes, and reference-confidence blocks |
+| BED / GFF / GTF | Intervals and annotations on coordinates |
+
+## Slides: Pangenome files used in this course
+
+| Format | Role |
+|---|---|
+| GFA | Portable pangenome graph interchange |
+| ODGI `.og` | ODGI working graph |
+| rGFA | Reference-anchored graph |
+| GAF / GAM | Graph alignments |
+| GBZ | Compressed graph plus haplotype paths |
+| XG / GBWT | vg graph and haplotype indexes |
+
+> GFA is to pangenome graphs what FASTA is to linear sequences.
+
+## Slides: From assemblies to course files
+
+```text
+FASTA assemblies
+      |
+      v
+   WFMASH --------> PAF
+      |
+      v
+    PGGB ---------> GFA
+                     |
+          +----------+----------+
+          v                     v
+       ODGI .og          VCF / GAF / GBZ
+```
+
+## Slides: Raw data still matters
+
+- Illumina BCL/intensity data precedes FASTQ
+- Nanopore POD5/FAST5 preserves signal
+- Basecalling and filtering discard information
+- Reprocessing requires chemistry, software, and metadata
+
+> A file format is a biological contract.
+
+## Slides: FASTQ files are not equivalent
+
+A FASTQ may represent:
+
+- Short-read sequencing-by-synthesis
+- HiFi DNA
+- Nanopore DNA or direct RNA
+- Bulk RNA-seq
+- Single-cell libraries
+
+The same syntax does not imply the same experiment.

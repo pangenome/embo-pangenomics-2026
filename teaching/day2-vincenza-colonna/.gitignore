@@ -1,0 +1,13 @@
+/_output/
+/.quarto/
+/.cache/
+**/*.html
+**/*_files/
+**/*.quarto_ipynb
+*.log
+*.aux
+*.nav
+*.out
+*.snm
+*.tex
+*.toc

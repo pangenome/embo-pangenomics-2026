@@ -1,0 +1,74 @@
+## Slides: Shared short-read logic
+
+1. Add platform-specific adapters
+2. Produce detectable clonal copies
+3. Measure nucleotide incorporation cycle by cycle
+4. Convert measurements into bases and quality scores
+5. Export demultiplexed reads
+
+## Slides: Illumina
+
+- Fragments form clonal clusters on a flow cell
+- Reversible-terminator sequencing-by-synthesis
+- Broad instrument and library ecosystem
+- Familiar error profiles and mature pipelines
+- Established reference point for compatibility and benchmarking
+
+::: {.notes}
+Give Illumina equal teaching time with Ultima. Emphasize both chemistry and the value of the mature ecosystem.
+:::
+
+## Slides: Ultima
+
+- Molecules are clonally amplified into beads
+- Beads load onto a high-density open fluidics surface
+- Flow-based sequencing-by-synthesis
+- Architecture optimized for sequencing at large scale
+- ppmSeq can use complementary-strand information for accurate SNV detection
+
+::: {.notes}
+Keep the description conceptual. Mention deep sequencing, rare variants, and cell-free DNA as relevant applications without turning this into a product catalogue.
+:::
+
+## Slides: ppmSeq
+
+![](figures/ultima2.png){width=82%}
+
+![](figures/ultima1.png){width=82%}
+
+## Slides: Illumina and Ultima
+
+| Illumina | Shared | Ultima |
+|---|---|---|
+| Mature ecosystem | High throughput | Scale-focused architecture |
+| Broad compatibility | High per-base accuracy | Open fluidics surface |
+| Deeply tested pipelines | Short-read evidence | ppmSeq workflows |
+
+Their biological limitations are more similar to each other than to long-read platforms.
+
+## Slides: What short reads do well
+
+- SNP and small-indel genotyping
+- Cohort-scale allele frequencies
+- RNA-seq and functional assays
+- Metagenomic profiling
+- Deep coverage of represented graph paths
+- Mapping many samples to a pangenome graph
+
+## Slides: Where short reads struggle
+
+- Repeats longer than the reads
+- Structural variants and novel insertions
+- Segmental duplications and paralogous loci
+- Long-range phasing
+- Complex de novo assembly
+- Sequences absent from the mapping reference
+
+```text
+Reference:    A -------- B
+Sample:       A -- [ long insertion ] -- B
+
+Short reads:  A --->       ?       <--- B
+Long read:    A ------------------------> B
+                    spans the event
+```

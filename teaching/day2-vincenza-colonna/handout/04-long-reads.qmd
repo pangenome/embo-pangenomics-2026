@@ -1,0 +1,124 @@
+## 4. Long-read sequencing: molecule context
+
+Long-read technologies help recover information that short reads fragment away: structural variation, repeats, haplotypes, isoforms, and epigenetic marks.
+
+### PacBio HiFi sequencing
+
+[PacBio HiFi sequencing](https://www.pacb.com/technology/hifi-sequencing/) combines long-read sequencing with high per-read accuracy. During library preparation, adapters are added to both ends of a double-stranded DNA fragment, creating a circular SMRTbell template. A DNA polymerase can then move around the same template multiple times during single-molecule real-time sequencing.
+
+Each pass produces a subread of the insert. Because the passes observe the same original DNA molecule repeatedly, their base calls can be compared and combined into a circular consensus sequence (CCS). Random errors are less likely to occur at the same position in every pass, so consensus generation produces one long, highly accurate HiFi read.
+
+The number of complete passes depends partly on insert length and polymerase read length. Shorter inserts may be read more times, while longer inserts may receive fewer passes. HiFi library design therefore balances read length, consensus accuracy, DNA quality, and the biological structures that need to be spanned.
+
+```text
+1. Linear double-stranded DNA fragment
+
+   5' ---------------- DNA insert ---------------- 3'
+   3' ---------------- DNA insert ---------------- 5'
+
+2. Hairpin adapters create a circular SMRTbell template
+
+                     DNA insert
+                /------------------\
+         adapter                    adapter
+                \------------------/
+                     DNA insert
+
+3. Polymerase reads around the same molecule repeatedly
+
+                pass 1  --->
+             /------------------\
+            |                    |
+             \------------------/
+                       <---  pass 2
+                pass 3  --->   ...
+
+4. Multiple subreads are combined
+
+   pass 1:  A C G T T G C A C T G A
+   pass 2:  A C G T T G C A C T G A
+   pass 3:  A C G T C G C A C T G A
+   pass 4:  A C G T T G C A C T G A
+            | | | | | | | | | | | |
+   HiFi:    A C G T T G C A C T G A
+
+            repeated observations -> accurate consensus read
+```
+
+*A HiFi read is a consensus generated from repeated observations of the same circularized DNA molecule, not a consensus across different molecules or individuals.*
+
+| | |
+|---|---|
+| **Strengths** | &bull; Long reads with high per-read accuracy<br>&bull; Strong for de novo assembly and structural variant discovery<br>&bull; Useful for kilobase-scale phasing<br>&bull; Can support DNA methylation detection<br>&bull; Well suited to haplotype-resolved assembly |
+| **Limitations for pangenomics** | &bull; Requires high-molecular-weight DNA<br>&bull; Throughput and cost depend on instrument, chemistry, genome size, and coverage<br>&bull; Reads are usually shorter than ultra-long nanopore reads<br>&bull; Library preparation and DNA quality can be limiting |
+| **Pangenomics role** | &bull; Build high-quality assemblies for graph construction<br>&bull; Discover structural variants precisely<br>&bull; Resolve paralogs, duplications, and complex loci<br>&bull; Produce haplotype-resolved graph paths |
+
+: {.platform-summary tbl-colwidths="[24,76]"}
+
+### Oxford Nanopore sequencing
+
+[Oxford Nanopore sequencing](https://nanoporetech.com/platform/technology) measures changes in electrical current as a native DNA or RNA molecule passes through a protein nanopore embedded in a membrane. A motor protein controls movement through the pore so that successive groups of bases influence the current signal over time.
+
+The instrument records this changing current as raw signal rather than nucleotide letters. A basecalling model interprets patterns in the signal and converts them into a sequence. Because neighboring bases affect the signal together, basecalling is a context-dependent inference rather than a direct observation of one isolated base at a time.
+
+The molecule can be read continuously until it exits the pore or sequencing is interrupted. Read length is therefore strongly influenced by the length and integrity of the input molecule. Native-molecule sequencing can also retain signal associated with base modifications, allowing sequence and modification information to be inferred from the same experiment.
+
+```text
+1. A motor protein guides a native molecule through a nanopore
+
+   DNA or RNA -----> [ motor ] -----> | nanopore | ----->
+                                         membrane
+
+2. Bases in and near the pore alter the electrical current
+
+   molecule:   A C G T T G C A C T G A
+               |---|---|---|---|---|---|
+   current:    _/\___/\_/\____/\_/\____
+                 signal changes over time
+
+3. A basecaller converts signal patterns into sequence
+
+   raw signal  ->  basecalling model  ->  A C G T T G C A C T G A
+
+4. One molecule produces one continuous long read
+
+   molecule:   |----------------------------------------------|
+   read:       ACGTTGCA...----------------------------------->
+```
+
+*A nanopore read is inferred from the electrical signal generated by one molecule passing through a pore. Unlike HiFi sequencing, high accuracy is not produced by repeated passes around a circular template.*
+
+| | |
+|---|---|
+| **Strengths** | &bull; Very long and ultra-long reads<br>&bull; Real-time sequencing and analysis<br>&bull; Portable and flexible instruments<br>&bull; Direct DNA or RNA sequencing with modification information<br>&bull; Spans large repeats and complex variants |
+| **Limitations for pangenomics** | &bull; Accuracy depends on chemistry, basecaller, model, and sample quality<br>&bull; Ultra-high-molecular-weight DNA extraction is technically demanding<br>&bull; Raw signal data can be large<br>&bull; Calling and polishing require suitable tools and QC |
+| **Pangenomics role** | &bull; Provide ultra-long-range continuity<br>&bull; Resolve large repeats and variants<br>&bull; Support rapid sequencing near the sample<br>&bull; Detect DNA or RNA modifications directly<br>&bull; Complement HiFi when length is the priority |
+
+: {.platform-summary tbl-colwidths="[24,76]"}
+
+### Approximate span of one sequence read
+
+```text
+                 100 bp       1 kb        10 kb       100 kb       1 Mb
+                   |-----------|-----------|-----------|-----------|
+
+Short read         |--|
+                   tens to hundreds of bases
+
+PacBio HiFi                    |-----------|
+                               roughly 10-25 kb is common
+
+Nanopore                       |-----------------------|
+                               often tens of kb; highly variable
+
+Ultra-long nanopore                            |-------------------|
+                                               reads can exceed 100 kb
+
+Longer reads preserve more context across:
+
+   variants ---- repeats ---- genes ---- structural variants ---- haplotypes
+```
+
+*Sequence technologies differ not only in accuracy and throughput but also in the amount of continuous molecule context retained in each read. Short reads provide deep local evidence, HiFi reads combine long-range context with high accuracy, and nanopore sequencing can extend into ultra-long molecule ranges. The horizontal scale is approximate and logarithmic; actual read-length distributions depend on platform, library preparation, DNA quality, size selection, chemistry, and run settings.*
+
+---

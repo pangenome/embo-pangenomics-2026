@@ -1,0 +1,11 @@
+## 11. Conclusions
+
+Pangenomics is not only a computational shift from lines to graphs. It is also an experimental design problem. The pangenome we build depends on the molecules we sequence, the technologies we choose, the file formats we preserve, and the biases we notice.
+
+> “A pangenome graph is a representation of diversity, and sequencing data is the evidence that guides which paths are part of that representation.”
+
+::: {.callout-note title="About this lesson"}
+Sequencing technologies are not interchangeable machines that output “the genome”. They produce different kinds of evidence about molecules.
+
+Pangenomics depends on understanding what evidence each data type preserves, loses, or biases.
+:::

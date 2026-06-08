@@ -1,0 +1,12 @@
+project:
+  type: default
+  output-dir: _output
+  render:
+    - handout.qmd
+    - slides.qmd
+
+execute:
+  freeze: auto
+
+metadata:
+  lang: en

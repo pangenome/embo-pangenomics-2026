@@ -1,0 +1,8 @@
+## Slides: Recurring mistakes
+
+1. Treating all FASTQ files as equivalent
+2. Ignoring library preparation
+3. Treating average coverage as uniform local coverage
+4. Confusing read accuracy with assembly accuracy
+5. Forgetting reference and mapping bias
+6. Losing sample, coordinate, and pipeline metadata

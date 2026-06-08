@@ -1,0 +1,19 @@
+## Source links for updating and further reading
+
+These are useful links to verify details, sequencing chemistries and software change quickly.
+
+- EMBO Practical Course – Pangenomics: https://meetings.embo.org/event/26-pangenomics
+- EASIGEN course summary: https://easigen.eu/events/embocourse_pangenomics
+- Illumina sequencing-by-synthesis technology: https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology.html
+- Ultima Genomics sequencing technology and workflows: https://www.ultimagenomics.com/
+- Original Hi-C method: https://doi.org/10.1126/science.1181369
+- PacBio HiFi sequencing: https://www.pacb.com/technology/hifi-sequencing/
+- Oxford Nanopore data analysis and basecalling: https://nanoporetech.com/document/data-analysis
+- Oxford Nanopore basecalling overview: https://nanoporetech.com/es/platform/technology/basecalling
+- GA4GH / SAMtools HTS specifications: https://samtools.github.io/hts-specs/
+- 1000 Genomes / IGSR data file formats: https://www.internationalgenome.org/formats/
+- GFA format specification: https://gfa-spec.github.io/GFA-spec/GFA1.html
+- PGGB quick start and pangenome graph framing: https://pggb.readthedocs.io/en/latest/rst/quick_start.html
+
+---
+

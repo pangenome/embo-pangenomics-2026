@@ -1,0 +1,18 @@
+## Learning objectives
+
+By the end of this lecture, participants should be able to:
+
+1. Distinguish a biological sample, an original molecule, a sequencing library, a read, and the processed evidence used in downstream analysis.
+2. Interpret coverage according to what is being counted, including read depth, physical coverage, haplotype coverage, k-mer coverage, and graph-path coverage.
+3. Compare short-read, PacBio HiFi, and Oxford Nanopore sequencing in terms of read length, accuracy, throughput, molecule context, and suitability for pangenome construction and analysis.
+4. Explain how Hi-C and optical mapping provide long-range structural evidence that differs from continuous sequence reads, and recognize the more specialized roles of linked-read, RNA, and single-cell data.
+5. Recognize the principal sequence, alignment, variant, graph, and index formats used in the course, and identify what information each format preserves or omits.
+6. Choose a sequencing and data strategy that matches the biological question, project scale, sample quality, downstream representation, acceptable error model, and available computational resources.
+7. Identify common sources of bias or misinterpretation, including reference bias, uneven coverage, mapping ambiguity, repetitive-sequence collapse, missing metadata, and treating all FASTQ files as equivalent.
+
+**Audience:** mixed-background participants entering a pangenomics practical course.  
+**Purpose:** create a shared vocabulary before graph construction, read mapping, variant analysis, and interpretation.
+
+**About this handout** This handout is the long-form companion to the lecture slides. Both are maintained as plain-text Markdown in Git and rendered with [Quarto](https://quarto.org/) The material was conceived, selected, reviewed, and is taught by Enza Colonna. OpenAI Codex was used as an AI-assisted drafting and editing tool to help structure text, create the initial slide adaptation, and configure the Quarto workflow.
+
+---
