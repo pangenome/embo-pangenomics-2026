@@ -13,7 +13,8 @@ For our first CWL workflow, let's create a really simple one that just prints a 
 ```
 (define print
   (command #:inputs (message #:type string)
-           #:run "echo" message))
+           #:run "echo" message
+           #:outputs (output-message #:type stdout))
 
 (workflow ((message #:type string))
   (print #:message message))
