@@ -1,0 +1,19 @@
+Number of mapped sequences: 5
+Number of primary alignments: 27521
+Number of secondary alignments: 0
+Number of primary alignments with >65535 CIGAR operations: 0
+Number of bases in mapped sequences: 129277049
+Number of mapped bases: 39458843
+Number of substitutions: 4068473
+Number of insertions in [0,50): 267902
+Number of insertions in [50,100): 448
+Number of insertions in [100,300): 49
+Number of insertions in [300,400): 4
+Number of insertions in [400,1000): 4
+Number of insertions in [1000,inf): 9
+Number of deletions in [0,50): 294159
+Number of deletions in [50,100): 1826
+Number of deletions in [100,300): 2399
+Number of deletions in [300,400): 418
+Number of deletions in [400,1000): 342
+Number of deletions in [1000,inf): 58

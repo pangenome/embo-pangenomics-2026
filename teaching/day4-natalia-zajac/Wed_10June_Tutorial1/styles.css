@@ -1,0 +1,9 @@
+details.image-toggle {
+  margin: 1em 0;
+}
+
+details.image-toggle summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #2c3e50;
+}

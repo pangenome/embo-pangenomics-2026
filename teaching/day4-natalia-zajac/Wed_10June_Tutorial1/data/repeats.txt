@@ -1,0 +1,5 @@
+genome	perc_bases_masked	GC
+Drosophila_melanogaster_GCF_000001215.4.fasta	19.18	42.08
+Drosophila_sechellia_GCF_004382195.2.fasta	15.05	42.68
+Drosophila_simulans_GCF_016746395.2.fasta	9.43	42.98
+Drosophila_suzuki_GCF_043229965.1.fasta	33.25	40.63
