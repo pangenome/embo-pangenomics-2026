@@ -36,6 +36,7 @@ Click on any poster preview to open the full PDF version.
 | Presenter | Poster Preview (Click to open PDF) |
 | :--- | :---: |
 | **AbouShady Shirin** | [![](posters/AbouShady_Shirin.jpg)](posters/AbouShady_Shirin.pdf) |
+| **Adbela Musse Girma** | [![](posters/Adbela_Musse-Girma.jpg)](posters/Adbela_Musse-Girma.pdf) |
 | **Carone Giulia** | [![](posters/Carone_Giulia.jpg)](posters/Carone_Giulia.pdf) |
 | **Delvento Chiara** | [![](posters/Delvento_Chiara.jpg)](posters/Delvento_Chiara.pdf) |
 | **Dungca Niña Theresa** | [![](posters/Dungca_Niña_Theresa.jpg)](posters/Dungca_Niña_Theresa.pdf) |
