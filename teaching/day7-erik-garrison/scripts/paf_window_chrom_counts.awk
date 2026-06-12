@@ -3,6 +3,9 @@ BEGIN {
     if (window == "") {
         window = 10000
     }
+    if (min_overlap == "") {
+        min_overlap = int(window / 2)
+    }
     print "chrom", "start", "end", "n_canonical_query_chromosomes", "n_other_canonical_query_chromosomes"
 }
 
@@ -35,6 +38,13 @@ $6 ~ /^SGDref#0#/ {
     first_bin = int(ref_start / window)
     last_bin = int((ref_end - 1) / window)
     for (bin = first_bin; bin <= last_bin; bin++) {
+        bin_start = bin * window
+        bin_end = bin_start + window
+        ov_start = (ref_start > bin_start ? ref_start : bin_start)
+        ov_end = (ref_end < bin_end ? ref_end : bin_end)
+        if (ov_end - ov_start < min_overlap) {
+            continue
+        }
         key = ref SUBSEP bin
         seen[key SUBSEP query_chrom] = 1
         if (query_chrom != ref_chrom) {

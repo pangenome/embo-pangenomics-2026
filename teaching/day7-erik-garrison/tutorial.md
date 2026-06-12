@@ -232,11 +232,13 @@ The syng backend is not the same thing as the all-vs-reference PAF. It uses an a
 
 These are precomputed from the full syng syncmer graph. They are mostly here to give intuition for the scale of the object we are querying. Reproducing them is a bonus activity below, not part of the 90-minute path.
 
-The first image is a full `odgi viz` rendering with one pixel per path row. The second is a 2D `odgi layout`/`odgi draw` rendering. Both are intentionally overwhelming.
+The first image is a full `odgi viz` rendering with one pixel per path row in the original graph order. The second repeats the 1D view after `odgi sort`, which makes some chromosome-scale structure easier to see. The third is a sorted 2D Hilbert-layout `odgi draw` rendering: it is still a hairball, but no longer just a squished line.
 
 ![Whole yeast syng graph, odgi viz full rows](figures/yeast235.syng.raw.og.full_rows.viz.png)
 
-![Whole yeast syng graph, odgi 2D layout draw](figures/yeast235.syng.raw.og.lay.draw.png)
+![Whole yeast syng graph, sorted odgi viz full rows](figures/yeast235.syng.raw.sorted.og.full_rows.viz.png)
+
+![Whole yeast syng graph, sorted Hilbert odgi draw](figures/yeast235.syng.raw.sorted.og.hilbert.lay.draw.png)
 
 </details>
 
@@ -278,7 +280,7 @@ impg query \
 
 ### Question
 
-Why is ADE2 less interesting as a pangenome teaching locus than the chromosome V subtelomere?
+How does the ADE2 result differ from the chromosome V subtelomere result, and what does that tell you about core genes versus subtelomeric sequence?
 
 <details>
 <summary>Answer</summary>
@@ -517,7 +519,7 @@ grep -vc '^#' results/ADE2.for_vcf.poa.ext1000.vcf
 head -40 results/ADE2.for_vcf.poa.ext1000.vcf
 ```
 
-This is cutting-edge graph-derived variant calling. The reference path name has to be present in the GFA. Here the `AAA` query pulls in the matching `SGDref` path, which gives `gfa2vcf` a clear reference. If VCF output fails on a larger or repeat-rich graph, keep the GFA and inspect the graph first. For example, `CUP1` is biologically interesting but much harder to decompose cleanly than `ADE2`.
+This is graph-derived variant calling from a local pangenome graph. The reference path name has to be present in the GFA. Here the `AAA` query pulls in the matching `SGDref` path, which gives `gfa2vcf` a clear reference. If VCF output fails on a larger or repeat-rich graph, keep the GFA and inspect the graph first. For example, `CUP1` is biologically interesting but much harder to decompose cleanly than `ADE2`.
 
 <details>
 <summary>Observed answer on this Vesuvio workspace</summary>
@@ -682,7 +684,71 @@ This is where you can reuse the gene-arrow plotting ideas from earlier activitie
 
 ### Inject gene features into an odgi graph
 
-Another useful trick is to turn GFF features into BED intervals over a graph path, inject them as new paths, and render the graph again. Here we use the CUP1 graph and the `SGDref#0#chrVIII:210000-216103` path.
+Another useful trick is to turn GFF features into BED intervals over a graph path, inject them as new paths, and render the graph again. Start with ADE2 because it is a plain core-gene control. Then repeat the same idea on CUP1, where copy number and repeats make the picture less tidy.
+
+For the ADE2 syng graph, the path we queried is named `AAA#0#chrXV:564476-566191` in this local GFA. The annotation coordinates still come from the SGDref GFF, but the BED path name must match a path that is actually present in the graph.
+
+```bash
+zcat yeast235.gff.gz \
+| awk -F '\t' '$1=="SGDref#0#chrXV" && $4 <= 566191 && $5 >= 564476 && ($3=="gene" || $3=="CDS") {print}' \
+> results/ADE2.SGDref.annotations.gff
+
+awk -F '\t' '
+    BEGIN { OFS="\t" }
+    {
+        start = $4 - 1 - 564476
+        end = $5 - 564476
+        if (start < 0) start = 0
+        if (end > 1715) end = 1715
+        name = ($3 == "gene" ? "ADE2_gene" : "ADE2_CDS")
+        print "AAA#0#chrXV:564476-566191", start, end, name
+    }' \
+    results/ADE2.SGDref.annotations.gff \
+| sort -u \
+> results/ADE2.AAA.genes.odgi.bed
+
+odgi build \
+    -g graphs/ADE2.syng.ext1000.gfa \
+    -o graphs/ADE2.syng.ext1000.og \
+    -P
+
+odgi inject \
+    -i graphs/ADE2.syng.ext1000.og \
+    -b results/ADE2.AAA.genes.odgi.bed \
+    -o graphs/ADE2.syng.ext1000.with_genes.og \
+    -P
+
+odgi viz \
+    -i graphs/ADE2.syng.ext1000.with_genes.og \
+    -o figures/ADE2.syng.ext1000.with_genes.odgi.png \
+    -x 900 -y 700 -a 20 -n -P
+
+{
+    echo 'AAA#0#chrXV:564476-566191'
+    cut -f 4 results/ADE2.AAA.genes.odgi.bed
+} > results/ADE2.AAA.genes.paths_to_display.txt
+
+odgi viz \
+    -i graphs/ADE2.syng.ext1000.with_genes.og \
+    -p results/ADE2.AAA.genes.paths_to_display.txt \
+    -o figures/ADE2.syng.ext1000.with_genes.focus.odgi.png \
+    -x 900 -y 220 -a 20 -n -P
+```
+
+<details>
+<summary>Output: ADE2 graph with injected gene paths</summary>
+
+All paths:
+
+![ADE2 syng graph with injected gene paths](figures/ADE2.syng.ext1000.with_genes.odgi.png)
+
+Focused view:
+
+![ADE2 focused injected gene paths](figures/ADE2.syng.ext1000.with_genes.focus.odgi.png)
+
+</details>
+
+Now do the same thing on CUP1. Here we use the CUP1 graph and the `SGDref#0#chrVIII:210000-216103` path.
 
 The BED coordinates are local to the graph path, so we subtract the path start (`210000`) from the SGDref GFF coordinates.
 
@@ -761,11 +827,13 @@ There is no single correct answer because each locus teaches a different flavor 
 
 ## 6. Pseudohomolog region experiment: scan reference windows
 
-Yue et al. 2017 described pseudohomolog regions (PHRs) in yeast subtelomeres, where different chromosome ends share homologous sequence blocks. We can make a simple version of that analysis by asking:
+The ScRAP assemblies from O'Donnell, Yue et al. 2023 give us complete chromosome ends across a broad panel of *S. cerevisiae* strains. The subtelomeres are enriched for structural variation, repeats, Ty/LTR sequence, X/Y-prime elements, and duplicated blocks that can be shared among different chromosome ends. In this tutorial we call those shared chromosome-end blocks pseudohomolog regions. Here we make a simple pseudohomolog region scan by asking:
 
 > In each 10 kb SGDref window, how many distinct query chromosome labels are found?
 
 This is a deliberately quick-and-dirty statistic. To keep the plot interpretable, the helper scripts keep only clean canonical chromosome labels: `chrI` through `chrXVI`, plus `chrMT`. They drop fused, fragmented, or block-style labels such as `chrV_2`, `chrV_chrX`, and `block84_contig3`. A more careful analysis would model those labels instead of throwing them away, but for this tutorial the conservative filter makes the pseudohomolog region signal much easier to see.
+
+The helper scripts also use a simple length filter. With 10 kb windows, the default is to count only hits that cover at least 5 kb of the reference window or returned BED interval. This is meant to reduce spikes from short transposon fragments in internal chromosome sequence. It is not a substitute for a careful repeat-aware homology model, but it makes the first-pass plot much easier to interpret.
 
 The scripts report two counts:
 
@@ -779,6 +847,7 @@ Run this for chromosome V:
 ```bash
 awk \
     -v window=10000 \
+    -v min_overlap=5000 \
     -v only_chrom='SGDref#0#chrV' \
     -f scripts/paf_window_chrom_counts.awk \
     yeast235.vs.SGDref.paf \
@@ -809,6 +878,7 @@ For a whole-genome scan, omit `only_chrom`:
 ```bash
 awk \
     -v window=10000 \
+    -v min_overlap=5000 \
     -f scripts/paf_window_chrom_counts.awk \
     yeast235.vs.SGDref.paf \
 > results/all_SGDref.paf.window_chrom_counts.tsv
@@ -821,6 +891,7 @@ For a quick multi-chromosome panel, scan a few chromosomes and plot them togethe
     first=1
     for chrom in SGDref#0#chrI SGDref#0#chrV SGDref#0#chrVIII SGDref#0#chrIX SGDref#0#chrXV; do
         awk -v window=10000 -v only_chrom="$chrom" \
+            -v min_overlap=5000 \
             -f scripts/paf_window_chrom_counts.awk \
             yeast235.vs.SGDref.paf \
         | awk -v first="$first" 'first || NR > 1 {print}'
@@ -843,7 +914,7 @@ Rscript scripts/plot_window_counts.R \
 
 ### 6B. Syng scan
 
-Run the same idea through syng. This is slower because it runs one `impg query` per window. For the practical, run chrV if you have time; otherwise run selected high-interest windows by hand.
+Run the same idea through syng. The helper writes the chromosome windows to a temporary BED file and calls `impg query -b ... -o bedpe`, so the syng index is loaded once for the whole chromosome instead of once per window. It is still slower than scanning a premade PAF, but it is practical for chrV.
 
 ```bash
 scripts/syng_window_chrom_counts.sh \
@@ -853,6 +924,7 @@ scripts/syng_window_chrom_counts.sh \
     yeast235.syng \
     yeast235.agc \
     yeast235.fa.gz.fai \
+    5000 \
 > results/chrV.syng.window_chrom_counts.tsv
 ```
 
@@ -908,7 +980,7 @@ Where are the highest-count windows? Are they close to telomeres, known subtelom
 <details>
 <summary>Answer</summary>
 
-On this dataset, the left end of chrV still shows high signal after filtering to clean chromosome labels. That is expected because the first 10 kb contains subtelomeric Y-prime and X element sequence. Most internal windows collapse to only chrV, which is what we want. Syng may still produce internal spikes; treat those as candidates for duplicated sequence, transitive syng hits, or parameters that are too permissive for the question.
+On this dataset, the left end of chrV still shows high signal after filtering to clean chromosome labels and requiring long hits. That is expected because the first 10 kb contains subtelomeric Y-prime and X element sequence. Most internal windows collapse to only chrV, which is what we want. Syng still produces several internal spikes; treat those as candidates to inspect with the GFF. They may be duplicated sequence, Ty/LTR-driven hits, true chromosome-end-like blocks, or cases where the syng parameters are still too permissive for this simple chromosome-label statistic.
 
 </details>
 
@@ -986,21 +1058,46 @@ odgi viz \
     -P
 ```
 
-Make a 2D layout and draw it. On Vesuvio this is bounded but not instant: expect minutes to tens of minutes.
+Sort the graph, then make a second 1D rendering. This is useful to compare with the original inclusion-order rendering.
+
+```bash
+odgi sort \
+    -i whole_syng_graph/yeast235.syng.raw.og \
+    -o whole_syng_graph/yeast235.syng.raw.sorted.og \
+    -p Ygs \
+    -O \
+    -t 32 \
+    -P
+
+odgi viz \
+    -i whole_syng_graph/yeast235.syng.raw.sorted.og \
+    -o whole_syng_graph/yeast235.syng.raw.sorted.og.full_rows.viz.png \
+    -x 3200 \
+    -y 9901 \
+    -a 1 \
+    -n \
+    -H \
+    -w 100000 \
+    -t 32 \
+    -P
+```
+
+Make a sorted 2D Hilbert layout and draw it. On Vesuvio this is bounded but not instant: expect tens of minutes for the layout on the full graph.
 
 ```bash
 odgi layout \
-    -i whole_syng_graph/yeast235.syng.raw.og \
-    -o whole_syng_graph/yeast235.syng.raw.og.lay \
-    -T whole_syng_graph/yeast235.syng.raw.og.lay.tsv \
+    -i whole_syng_graph/yeast235.syng.raw.sorted.og \
+    -o whole_syng_graph/yeast235.syng.raw.sorted.og.hilbert.lay \
+    -T whole_syng_graph/yeast235.syng.raw.sorted.og.hilbert.lay.tsv \
+    -N h \
     --temp-dir whole_syng_graph \
     -t 32 \
     -P
 
 odgi draw \
-    -i whole_syng_graph/yeast235.syng.raw.og \
-    -c whole_syng_graph/yeast235.syng.raw.og.lay \
-    -p whole_syng_graph/yeast235.syng.raw.og.lay.draw.png \
+    -i whole_syng_graph/yeast235.syng.raw.sorted.og \
+    -c whole_syng_graph/yeast235.syng.raw.sorted.og.hilbert.lay \
+    -p whole_syng_graph/yeast235.syng.raw.sorted.og.hilbert.lay.draw.png \
     -H 1600 \
     -w 1
 ```
@@ -1010,7 +1107,9 @@ odgi draw \
 
 ![Whole yeast syng graph, odgi viz full rows](figures/yeast235.syng.raw.og.full_rows.viz.png)
 
-![Whole yeast syng graph, odgi 2D layout draw](figures/yeast235.syng.raw.og.lay.draw.png)
+![Whole yeast syng graph, sorted odgi viz full rows](figures/yeast235.syng.raw.sorted.og.full_rows.viz.png)
+
+![Whole yeast syng graph, sorted Hilbert odgi draw](figures/yeast235.syng.raw.sorted.og.hilbert.lay.draw.png)
 
 </details>
 
@@ -1019,6 +1118,7 @@ Run more chromosomes:
 ```bash
 for chrom in SGDref#0#chrI SGDref#0#chrV SGDref#0#chrVIII SGDref#0#chrIX; do
     awk -v window=10000 -v only_chrom="$chrom" \
+        -v min_overlap=5000 \
         -f scripts/paf_window_chrom_counts.awk \
         yeast235.vs.SGDref.paf \
     > results/${chrom##*#}.paf.window_chrom_counts.tsv
@@ -1030,6 +1130,7 @@ Try smaller or larger windows:
 ```bash
 for w in 5000 10000 25000; do
     awk -v window="$w" -v only_chrom='SGDref#0#chrV' \
+        -v min_overlap="$((w / 2))" \
         -f scripts/paf_window_chrom_counts.awk \
         yeast235.vs.SGDref.paf \
     > results/chrV.paf.${w}bp_windows.tsv
@@ -1088,10 +1189,44 @@ cut -f 1 results/Ty5_chrIII_1179_4322.syng.d0.bed \
 | sort | uniq -c | sort -nr
 ```
 
+The default syng query is intentionally conservative about high-copy seeds. For a Ty element, that can hide exactly the repetitive signal you are trying to measure. Try a more permissive seed query:
+
+```bash
+impg query \
+    -a yeast235.syng \
+    --sequence-files yeast235.agc \
+    -r SGDref#0#chrIII:1179-4322 \
+    -d 0 \
+    -o bed \
+    --syng-seed-drop-top-fraction 0 \
+    --syng-seed-walk-anchors 1 \
+> results/Ty5_chrIII_1179_4322.syng.d0.seeddrop0_walk1.bed
+
+impg query \
+    -a yeast235.syng \
+    --sequence-files yeast235.agc \
+    -r SGDref#0#chrIII:1179-4322 \
+    -d 0 \
+    -o bed \
+    --syng-seed-drop-top-fraction 0 \
+    --syng-seed-walk-anchors 1 \
+    --syng-raw \
+> results/Ty5_chrIII_1179_4322.syng.d0.seeddrop0_walk1_raw.bed
+
+for f in results/Ty5_chrIII_1179_4322.syng.d0*.bed; do
+    echo
+    echo "$f"
+    wc -l "$f"
+    cut -f 1 "$f" | sort -u | wc -l
+done
+```
+
 <details>
 <summary>Observed answer on this Vesuvio workspace</summary>
 
-The chrIII Ty5 seed returned 192 BED intervals across 134 sequence paths with `-d 0`. Most clean labels were chrIII, but the query also picked up canonical hits to chrXIII, chrVI, chrVIII, chrII, chrXV, chrXIV, chrXI, and chrVII, plus fused and block-style labels. With `-d 1k`, nearby intervals merge down to 137 BED rows. This is exactly why Ty elements are interesting, and also why a single local graph can become hard to interpret quickly.
+The default chrIII Ty5 query returned 192 BED intervals across 134 sequence paths with `-d 0`. Setting `--syng-seed-drop-top-fraction 0` alone did not change that result in this run. Reducing the exact seed walk requirement mattered much more: `--syng-seed-walk-anchors 3` returned 246 intervals across 154 paths, and `--syng-seed-walk-anchors 1` returned 460 intervals across 363 paths. Adding `--syng-raw` with walk anchors set to 1 returned 737 raw intervals across the same 363 paths.
+
+So the Ty seed is a useful stress test, but it is also a warning. For a repetitive element, frequency-aware seed filters, consecutive-anchor requirements, and boundary refinement all change what "the hits" mean. If the goal is to recover the whole dispersed Ty family, loosen the syng seed settings and inspect counts before building a local graph.
 
 </details>
 
