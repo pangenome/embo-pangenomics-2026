@@ -686,7 +686,20 @@ This is where you can reuse the gene-arrow plotting ideas from earlier activitie
 
 Another useful trick is to turn GFF features into BED intervals over a graph path, inject them as new paths, and render the graph again. Start with ADE2 because it is a plain core-gene control. Then repeat the same idea on CUP1, where copy number and repeats make the picture less tidy.
 
-For the ADE2 syng graph, the path we queried is named `AAA#0#chrXV:564476-566191` in this local GFA. The annotation coordinates still come from the SGDref GFF, but the BED path name must match a path that is actually present in the graph.
+For the ADE2 example, use the PGGB graph output from the graph-engine comparison above. If you need to regenerate it, use `-o gfa:pggb`:
+
+```bash
+impg query \
+    -a yeast235.syng \
+    --sequence-files yeast235.agc \
+    -r SGDref#0#chrXV:564476-566191 \
+    -d 1k \
+    -o gfa:pggb \
+    --syng-extension 1000 \
+> graphs/ADE2.pggb.ext1000.gfa
+```
+
+The path we queried is named `AAA#0#chrXV:564476-566191` in this local GFA. The annotation coordinates still come from the SGDref GFF, but the BED path name must match a path that is actually present in the graph.
 
 ```bash
 zcat yeast235.gff.gz \
@@ -708,19 +721,19 @@ awk -F '\t' '
 > results/ADE2.AAA.genes.odgi.bed
 
 odgi build \
-    -g graphs/ADE2.syng.ext1000.gfa \
-    -o graphs/ADE2.syng.ext1000.og \
+    -g graphs/ADE2.pggb.ext1000.gfa \
+    -o graphs/ADE2.pggb.ext1000.og \
     -P
 
 odgi inject \
-    -i graphs/ADE2.syng.ext1000.og \
+    -i graphs/ADE2.pggb.ext1000.og \
     -b results/ADE2.AAA.genes.odgi.bed \
-    -o graphs/ADE2.syng.ext1000.with_genes.og \
+    -o graphs/ADE2.pggb.ext1000.with_genes.og \
     -P
 
 odgi viz \
-    -i graphs/ADE2.syng.ext1000.with_genes.og \
-    -o figures/ADE2.syng.ext1000.with_genes.odgi.png \
+    -i graphs/ADE2.pggb.ext1000.with_genes.og \
+    -o figures/ADE2.pggb.ext1000.with_genes.odgi.png \
     -x 900 -y 700 -a 20 -n -P
 
 {
@@ -729,22 +742,24 @@ odgi viz \
 } > results/ADE2.AAA.genes.paths_to_display.txt
 
 odgi viz \
-    -i graphs/ADE2.syng.ext1000.with_genes.og \
+    -i graphs/ADE2.pggb.ext1000.with_genes.og \
     -p results/ADE2.AAA.genes.paths_to_display.txt \
-    -o figures/ADE2.syng.ext1000.with_genes.focus.odgi.png \
+    -o figures/ADE2.pggb.ext1000.with_genes.focus.odgi.png \
     -x 900 -y 220 -a 20 -n -P
 ```
 
 <details>
-<summary>Output: ADE2 graph with injected gene paths</summary>
+<summary>Output: ADE2 PGGB graph with injected gene paths</summary>
+
+This is useful, but it is not a perfect explanatory picture. The all-path rendering is visually dense, and some of that may be graph construction or display choices rather than biology. Treat it as something to inspect and debug. The focused view is the cleaner sanity check: the query path and injected ADE2 feature paths are present and aligned.
 
 All paths:
 
-![ADE2 syng graph with injected gene paths](figures/ADE2.syng.ext1000.with_genes.odgi.png)
+![ADE2 PGGB graph with injected gene paths](figures/ADE2.pggb.ext1000.with_genes.odgi.png)
 
 Focused view:
 
-![ADE2 focused injected gene paths](figures/ADE2.syng.ext1000.with_genes.focus.odgi.png)
+![ADE2 focused injected gene paths in the PGGB graph](figures/ADE2.pggb.ext1000.with_genes.focus.odgi.png)
 
 </details>
 
