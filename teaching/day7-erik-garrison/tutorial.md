@@ -684,9 +684,83 @@ This is where you can reuse the gene-arrow plotting ideas from earlier activitie
 
 ### Inject gene features into an odgi graph
 
-Another useful trick is to turn GFF features into BED intervals over a graph path, inject them as new paths, and render the graph again. Start with ADE2 because it is a plain core-gene control. Then repeat the same idea on CUP1, where copy number and repeats make the picture less tidy.
+Another useful trick is to turn GFF features into BED intervals over a graph path, inject them as new paths, and render the graph again. Start with URA3 because it is a plain core-gene control and gives a simple sanity check. Then try ADE2, which is still a core gene but gives a messier graph here. Finally repeat the same idea on CUP1, where copy number and repeats make the picture less tidy for biological reasons.
 
-For the ADE2 example, use the PGGB graph output from the graph-engine comparison above. If you need to regenerate it, use `-o gfa:pggb`:
+For URA3, build a small PGGB graph:
+
+```bash
+impg query \
+    -a yeast235.syng \
+    --sequence-files yeast235.agc \
+    -r SGDref#0#chrV:115500-117500 \
+    -d 1k \
+    -o gfa:pggb \
+    --syng-extension 1000 \
+> graphs/URA3.pggb.ext1000.gfa
+```
+
+The path we queried is named `AAA#0#chrV:115500-117500` in this local GFA. Convert the URA3 GFF records into local BED coordinates on that path:
+
+```bash
+zcat yeast235.gff.gz \
+| awk -F '\t' '$1=="SGDref#0#chrV" && (($3=="gene" && $9 ~ /gene=URA3(;|,)/) || ($3=="CDS" && $9 ~ /Name=YEL021W_CDS/)) {print}' \
+> results/URA3.SGDref.annotations.gff
+
+awk -F '\t' '
+    BEGIN { OFS="\t" }
+    {
+        start = $4 - 1 - 115500
+        end = $5 - 115500
+        if (start < 0) start = 0
+        if (end > 2000) end = 2000
+        name = ($3 == "gene" ? "URA3_gene" : "URA3_CDS")
+        print "AAA#0#chrV:115500-117500", start, end, name
+    }' \
+    results/URA3.SGDref.annotations.gff \
+> results/URA3.AAA.genes.odgi.bed
+
+odgi build \
+    -g graphs/URA3.pggb.ext1000.gfa \
+    -o graphs/URA3.pggb.ext1000.og \
+    -P
+
+odgi inject \
+    -i graphs/URA3.pggb.ext1000.og \
+    -b results/URA3.AAA.genes.odgi.bed \
+    -o graphs/URA3.pggb.ext1000.with_genes.og \
+    -P
+
+odgi viz \
+    -i graphs/URA3.pggb.ext1000.with_genes.og \
+    -o figures/URA3.pggb.ext1000.with_genes.odgi.png \
+    -x 900 -y 700 -a 20 -n -P
+
+{
+    echo 'AAA#0#chrV:115500-117500'
+    cut -f 4 results/URA3.AAA.genes.odgi.bed
+} > results/URA3.AAA.genes.paths_to_display.txt
+
+odgi viz \
+    -i graphs/URA3.pggb.ext1000.with_genes.og \
+    -p results/URA3.AAA.genes.paths_to_display.txt \
+    -o figures/URA3.pggb.ext1000.with_genes.focus.odgi.png \
+    -x 900 -y 220 -a 20 -n -P
+```
+
+<details>
+<summary>Output: URA3 PGGB graph with injected gene paths</summary>
+
+All paths:
+
+![URA3 PGGB graph with injected gene paths](figures/URA3.pggb.ext1000.with_genes.odgi.png)
+
+Focused view:
+
+![URA3 focused injected gene paths in the PGGB graph](figures/URA3.pggb.ext1000.with_genes.focus.odgi.png)
+
+</details>
+
+Now repeat the same procedure on ADE2. The PGGB graph output was produced in the graph-engine comparison above, but you can regenerate it with `-o gfa:pggb`:
 
 ```bash
 impg query \
@@ -763,13 +837,26 @@ Focused view:
 
 </details>
 
-Now do the same thing on CUP1. Here we use the CUP1 graph and the `SGDref#0#chrVIII:210000-216103` path.
+Now do the same thing on CUP1. Build a PGGB graph for the CUP1 window:
+
+```bash
+impg query \
+    -a yeast235.syng \
+    --sequence-files yeast235.agc \
+    -r SGDref#0#chrVIII:210000-216103 \
+    -d 1k \
+    -o gfa:pggb \
+    --syng-extension 1000 \
+> graphs/CUP1.pggb.ext1000.gfa
+```
+
+In this local GFA, the query path is named `AAA#0#chrVIII:210000-216103`.
 
 The BED coordinates are local to the graph path, so we subtract the path start (`210000`) from the SGDref GFF coordinates.
 
 ```bash
 zcat yeast235.gff.gz \
-| awk -F '\t' -v path='SGDref#0#chrVIII:210000-216103' -v region_start=210000 -v region_end=216103 '
+| awk -F '\t' -v path='AAA#0#chrVIII:210000-216103' -v region_start=210000 -v region_end=216103 '
     BEGIN { OFS="\t" }
     $1=="SGDref#0#chrVIII" && $3=="gene" && $4 <= region_end && $5 >= region_start {
         start = $4 - 1 - region_start
@@ -785,45 +872,52 @@ zcat yeast235.gff.gz \
         }
         print path, start, end, name
     }' \
-> results/CUP1.SGDref.genes.odgi.bed
+> results/CUP1.AAA.genes.odgi.bed
+
+odgi build \
+    -g graphs/CUP1.pggb.ext1000.gfa \
+    -o graphs/CUP1.pggb.ext1000.og \
+    -P
 
 odgi inject \
-    -i graphs/CUP1.syng.ext1000.og \
-    -b results/CUP1.SGDref.genes.odgi.bed \
-    -o graphs/CUP1.syng.ext1000.with_genes.og \
-    -t 4
+    -i graphs/CUP1.pggb.ext1000.og \
+    -b results/CUP1.AAA.genes.odgi.bed \
+    -o graphs/CUP1.pggb.ext1000.with_genes.og \
+    -P
 ```
 
-Render the injected graph. The first rendering keeps all graph paths; the focused rendering shows only the SGDref path and injected gene paths.
+Render the injected graph. The first rendering keeps all graph paths; the focused rendering shows only the query path and injected gene paths.
 
 ```bash
 odgi viz \
-    -i graphs/CUP1.syng.ext1000.with_genes.og \
-    -o figures/CUP1.syng.ext1000.with_genes.odgi.png \
-    -x 1800 -y 900 -a 2
+    -i graphs/CUP1.pggb.ext1000.with_genes.og \
+    -o figures/CUP1.pggb.ext1000.with_genes.odgi.png \
+    -x 1800 -y 900 -a 2 -n -P
 
 {
-    echo 'SGDref#0#chrVIII:210000-216103'
-    cut -f 4 results/CUP1.SGDref.genes.odgi.bed
-} > results/CUP1.SGDref.genes.paths_to_display.txt
+    echo 'AAA#0#chrVIII:210000-216103'
+    cut -f 4 results/CUP1.AAA.genes.odgi.bed
+} > results/CUP1.AAA.genes.paths_to_display.txt
 
 odgi viz \
-    -i graphs/CUP1.syng.ext1000.with_genes.og \
-    -p results/CUP1.SGDref.genes.paths_to_display.txt \
-    -o figures/CUP1.syng.ext1000.with_genes.focus.odgi.png \
-    -x 1800 -y 420 -a 16 -c 24
+    -i graphs/CUP1.pggb.ext1000.with_genes.og \
+    -p results/CUP1.AAA.genes.paths_to_display.txt \
+    -o figures/CUP1.pggb.ext1000.with_genes.focus.odgi.png \
+    -x 1800 -y 420 -a 16 -c 24 -n -P
 ```
 
 <details>
-<summary>Output: CUP1 graph with injected gene paths</summary>
+<summary>Output: CUP1 PGGB graph with injected gene paths</summary>
+
+This is the deliberately harder case. The CUP1 region contains duplicated gene copies and nearby small ORFs, and the PGGB graph reflects that local repeat structure.
 
 All paths:
 
-![CUP1 syng graph with injected gene paths](figures/CUP1.syng.ext1000.with_genes.odgi.png)
+![CUP1 PGGB graph with injected gene paths](figures/CUP1.pggb.ext1000.with_genes.odgi.png)
 
 Focused view:
 
-![CUP1 focused injected gene paths](figures/CUP1.syng.ext1000.with_genes.focus.odgi.png)
+![CUP1 focused injected gene paths in the PGGB graph](figures/CUP1.pggb.ext1000.with_genes.focus.odgi.png)
 
 </details>
 
