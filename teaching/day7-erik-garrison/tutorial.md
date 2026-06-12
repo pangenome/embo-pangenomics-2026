@@ -105,14 +105,6 @@ GUIX_PROFILE="$HOME/.guix-profile"
 unset GUIX_PROFILE
 ```
 
-`odgi` may not be visible in the current Guix channel on this Vesuvio image. Try the normal install first:
-
-```bash
-guix install odgi
-```
-
-If Guix says `odgi: unknown package`, do not spend workshop time debugging that. The helper script below will look for a provided `odgi` binary in `/gnu/store`.
-
 Now symlink the prepared files. Symlinks are faster and avoid copying several GB per group.
 
 ```bash
