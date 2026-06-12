@@ -117,7 +117,7 @@ Now symlink the prepared files. Symlinks are faster and avoid copying several GB
 
 ```bash
 
-SOURCE=/home/erikg/yeast
+SOURCE=/export/yeast
 
 ln -s ${SOURCE}/yeast235.fa.gz .
 ln -s ${SOURCE}/yeast235.fa.gz.fai .
