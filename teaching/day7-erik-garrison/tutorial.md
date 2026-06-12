@@ -59,11 +59,9 @@ You do not need to tune these parameters during the practical. The query paramet
 
 Figure 1 of Edgar 2021 gives the cleanest visual introduction to closed syncmers. If you want to read the original explanation, open the paper through the DOI: <https://doi.org/10.7717/peerj.10805>.
 
-Once the workshop image file is present, it can be shown here as:
+![Edgar 2021 Figure 1: closed syncmers](figures/fig-1-2x.png)
 
-```markdown
-![Edgar 2021 Figure 1: closed syncmers](figures/edgar_2021_closed_syncmers_fig1.jpg)
-```
+Figure from Edgar 2021, PeerJ, CC BY 4.0.
 
 </details>
 
@@ -228,6 +226,19 @@ ls yeast235.syng.*
 ```
 
 The syng backend is not the same thing as the all-vs-reference PAF. It uses an all-to-all-ish syncmer/GBWT representation to find sequence neighborhoods that can be missed or flattened in a strict reference projection.
+
+<details>
+<summary>Output: whole syng graph renderings</summary>
+
+These are precomputed from the full syng syncmer graph. They are mostly here to give intuition for the scale of the object we are querying. Reproducing them is a bonus activity below, not part of the 90-minute path.
+
+The first image is a full `odgi viz` rendering with one pixel per path row. The second is a 2D `odgi layout`/`odgi draw` rendering. Both are intentionally overwhelming.
+
+![Whole yeast syng graph, odgi viz full rows](figures/yeast235.syng.raw.og.full_rows.viz.png)
+
+![Whole yeast syng graph, odgi 2D layout draw](figures/yeast235.syng.raw.og.lay.draw.png)
+
+</details>
 
 ## 3. First queries: a subtelomere and a core gene
 
@@ -939,6 +950,69 @@ For `SGDref#0#chrV`, the GFF contains a left telomeric Y-prime element from appr
 7. Compare PAF vs syng, then connect high-count windows to GFF subtelomeric features: 15 minutes.
 
 ## 9. Bonus extensions
+
+Render the whole syng syncmer graph. This is mostly for fun and for intuition. The intermediate files are several GB, so keep them in a local work directory and do not add them to git.
+
+```bash
+mkdir -p whole_syng_graph
+
+impg syng2gfa \
+    -a yeast235.syng \
+    --gfa-mode raw \
+    -t 16 \
+> whole_syng_graph/yeast235.syng.raw.gfa
+
+odgi build \
+    -g whole_syng_graph/yeast235.syng.raw.gfa \
+    -o whole_syng_graph/yeast235.syng.raw.og \
+    -O \
+    -P \
+    -t 32
+```
+
+Make a whole-graph `odgi viz` image with one pixel per path row:
+
+```bash
+odgi viz \
+    -i whole_syng_graph/yeast235.syng.raw.og \
+    -o whole_syng_graph/yeast235.syng.raw.og.full_rows.viz.png \
+    -x 3200 \
+    -y 9901 \
+    -a 1 \
+    -n \
+    -H \
+    -w 100000 \
+    -t 32 \
+    -P
+```
+
+Make a 2D layout and draw it. On Vesuvio this is bounded but not instant: expect minutes to tens of minutes.
+
+```bash
+odgi layout \
+    -i whole_syng_graph/yeast235.syng.raw.og \
+    -o whole_syng_graph/yeast235.syng.raw.og.lay \
+    -T whole_syng_graph/yeast235.syng.raw.og.lay.tsv \
+    --temp-dir whole_syng_graph \
+    -t 32 \
+    -P
+
+odgi draw \
+    -i whole_syng_graph/yeast235.syng.raw.og \
+    -c whole_syng_graph/yeast235.syng.raw.og.lay \
+    -p whole_syng_graph/yeast235.syng.raw.og.lay.draw.png \
+    -H 1600 \
+    -w 1
+```
+
+<details>
+<summary>Output: whole syng graph renderings</summary>
+
+![Whole yeast syng graph, odgi viz full rows](figures/yeast235.syng.raw.og.full_rows.viz.png)
+
+![Whole yeast syng graph, odgi 2D layout draw](figures/yeast235.syng.raw.og.lay.draw.png)
+
+</details>
 
 Run more chromosomes:
 
