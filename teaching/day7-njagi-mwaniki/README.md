@@ -43,6 +43,13 @@ git clone https://github.com/urbanslug/pang-datasets.git
 ### Inspect the data using the TUI
 Link here https://github.com/urbanslug/povu/blob/main/docs/tui.md
 
+
+### Call Variants on reference chm13
+```
+povu gfa2vcf -v 4 -i LPA.gfa -P "chm13" -t 20 > x.pv.vcf
+```
+
+
 ### LPA
 ```
 povu view -i  $DATA_DIR/LPA.gfa
