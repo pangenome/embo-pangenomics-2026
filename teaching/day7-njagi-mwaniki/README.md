@@ -38,3 +38,14 @@ Fetch the data
 ```
 git clone https://github.com/urbanslug/pang-datasets.git
 ```
+
+
+### Inspect the data using the TUI
+Link here https://github.com/urbanslug/povu/blob/main/docs/tui.md
+
+### LPA
+```
+povu view -i  $DATA_DIR/LPA.gfa
+```
+Jump to tangle `/1750`
+
